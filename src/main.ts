@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle("RealTime Chat")
     .setDescription("My first study about websockets")
     .setVersion("1.0.0")
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
