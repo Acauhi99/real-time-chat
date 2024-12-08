@@ -1,6 +1,6 @@
 import { DataSourceOptions } from "typeorm";
 import { ConfigService } from "@nestjs/config";
-import { User } from "./user/user.model";
+import { User } from "../user/user.model";
 
 export const getDatabaseConfig = (
   configService: ConfigService
