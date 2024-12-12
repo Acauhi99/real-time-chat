@@ -3,6 +3,7 @@ import { UserModule } from "./user/user.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { getDatabaseConfig } from "./config/database.config";
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { getDatabaseConfig } from "./config/database.config";
       inject: [ConfigService],
     }),
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
