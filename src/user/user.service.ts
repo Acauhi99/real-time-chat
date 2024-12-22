@@ -1,34 +1,49 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserRepository } from "./user.repository";
-import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "./user.model";
+import { DataUserResponseDto } from "./dto/data-user-response.dto";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(UserRepository)
-    private readonly userRepository: UserRepository
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<DataUserResponseDto> {
     return this.userRepository.createUser(createUserDto);
   }
 
-  findAll(): Promise<User[]> {
+  async findAll(): Promise<DataUserResponseDto[]> {
     return this.userRepository.find();
   }
 
-  findOne(id: string): Promise<User | null> {
-    return this.userRepository.findById(id);
+  async findOne(id: string): Promise<DataUserResponseDto> {
+    const user = await this.userRepository.findById(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
-    return this.userRepository.updateUser(id, updateUserDto);
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto
+  ): Promise<DataUserResponseDto> {
+    const updatedUser = await this.userRepository.updateUser(id, updateUserDto);
+
+    if (!updatedUser) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    return updatedUser;
   }
 
-  remove(id: string): Promise<void> {
-    return this.userRepository.removeUser(id);
+  async remove(id: string): Promise<void> {
+    const deleted = await this.userRepository.removeUser(id);
+
+    if (!deleted) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
   }
 }
