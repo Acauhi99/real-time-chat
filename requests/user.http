@@ -1,0 +1,33 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Create User
+POST {{baseUrl}}/user
+Content-Type: {{contentType}}
+
+{
+    "email": "john.doe@example.com",
+    "name": "John Doe",
+    "password": "password123"
+}
+
+### Get All Users
+GET {{baseUrl}}/user
+Content-Type: {{contentType}}
+
+### Get User by ID
+GET {{baseUrl}}/user/a9d53172-aaac-4bbb-ba9e-98743b67a277
+Content-Type: {{contentType}}
+
+### Update User
+PATCH {{baseUrl}}/user/a9d53172-aaac-4bbb-ba9e-98743b67a277
+Content-Type: {{contentType}}
+
+{
+    "name": "John Doe Updated",
+    "email": "john.updated@example.com"
+}
+
+### Delete User
+DELETE {{baseUrl}}/user/a9d53172-aaac-4bbb-ba9e-98743b67a272
+Content-Type: {{contentType}}
