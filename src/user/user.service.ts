@@ -3,19 +3,13 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserRepository } from "./user.repository";
 import { DataUserResponseDto } from "./dto/data-user-response.dto";
-import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<DataUserResponseDto> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-
-    return this.userRepository.createUser({
-      ...createUserDto,
-      password: hashedPassword,
-    });
+    return this.userRepository.createUser(createUserDto);
   }
 
   async findAll(): Promise<DataUserResponseDto[]> {
@@ -36,10 +30,6 @@ export class UserService {
     id: string,
     updateUserDto: UpdateUserDto
   ): Promise<DataUserResponseDto> {
-    if (updateUserDto.password) {
-      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
-    }
-
     const updatedUser = await this.userRepository.updateUser(id, updateUserDto);
 
     if (!updatedUser) {

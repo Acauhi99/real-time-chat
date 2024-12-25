@@ -3,6 +3,7 @@ import { User } from "./user.model";
 import { DataUserResponseDto } from "./dto/data-user-response.dto";
 import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserRepository {
@@ -33,7 +34,12 @@ export class UserRepository {
       );
     }
 
-    const newUser = await this.userRepository.save(user);
+    const hashedPassword = await this.hashPassword(user.password!);
+    const newUser = await this.userRepository.save({
+      ...user,
+      password: hashedPassword,
+    });
+
     const { password, ...userWithoutPassword } = newUser;
 
     return userWithoutPassword;
@@ -43,6 +49,10 @@ export class UserRepository {
     id: string,
     user: Partial<User>
   ): Promise<DataUserResponseDto | null> {
+    if (user.password) {
+      user.password = await this.hashPassword(user.password);
+    }
+
     await this.userRepository.update(id, user);
     return this.findById(id);
   }
@@ -55,6 +65,11 @@ export class UserRepository {
 
   async find(): Promise<DataUserResponseDto[]> {
     const users = await this.userRepository.find();
+
     return users.map(({ password, ...user }) => user);
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, await bcrypt.genSalt());
   }
 }
