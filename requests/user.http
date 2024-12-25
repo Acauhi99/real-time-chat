@@ -16,11 +16,11 @@ GET {{baseUrl}}/user
 Content-Type: {{contentType}}
 
 ### Get User by ID
-GET {{baseUrl}}/user/a9d53172-aaac-4bbb-ba9e-98743b67a277
+GET {{baseUrl}}/user/e0820ef8-a2ed-4d08-a6df-662d6803d576
 Content-Type: {{contentType}}
 
 ### Update User
-PATCH {{baseUrl}}/user/a9d53172-aaac-4bbb-ba9e-98743b67a277
+PATCH {{baseUrl}}/user/e0820ef8-a2ed-4d08-a6df-662d6803d576
 Content-Type: {{contentType}}
 
 {
@@ -29,5 +29,5 @@ Content-Type: {{contentType}}
 }
 
 ### Delete User
-DELETE {{baseUrl}}/user/a9d53172-aaac-4bbb-ba9e-98743b67a272
+DELETE {{baseUrl}}/user/e0820ef8-a2ed-4d08-a6df-662d6803d576
 Content-Type: {{contentType}}
