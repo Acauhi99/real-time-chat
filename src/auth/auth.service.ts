@@ -5,6 +5,7 @@ import { CreateUserDto } from "../user/dto/create-user.dto";
 import { SignInDto } from "./dto/sign-in.dto";
 import * as bcrypt from "bcrypt";
 import { DataUserResponseDto } from "../user/dto/data-user-response.dto";
+import { IJwtPayload } from "./interface/jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,8 @@ export class AuthService {
       throw new UnauthorizedException("Invalid credentials");
     }
 
-    const payload = { sub: user.userId, email: user.email };
+    const payload: IJwtPayload = { sub: user.userId, email: user.email };
+
     return {
       accessToken: this.jwtService.sign(payload),
     };
