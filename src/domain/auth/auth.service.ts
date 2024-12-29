@@ -1,11 +1,15 @@
-import { UserRepository } from "./../user/user.repository";
+import { UserRepository } from "../user/user.repository";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { SignInDto } from "./dto/sign-in.dto";
 import * as bcrypt from "bcrypt";
 import { DataUserResponseDto } from "../user/dto/data-user-response.dto";
-import { IJwtPayload } from "./interface/jwt-payload.interface";
+import { IJwtPayload } from "./strategies/jwt.strategy";
+
+export interface AuthResponse {
+  accessToken: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -18,7 +22,7 @@ export class AuthService {
     return this.userRepository.createUser(createUserDto);
   }
 
-  async signIn(signInDto: SignInDto): Promise<{ accessToken: string }> {
+  async signIn(signInDto: SignInDto): Promise<AuthResponse> {
     const user = await this.userRepository.findByEmail(signInDto.email);
 
     if (!user) {

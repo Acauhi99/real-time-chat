@@ -10,6 +10,7 @@ import {
   HttpStatus,
   UseInterceptors,
   ClassSerializerInterceptor,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -32,13 +33,15 @@ export class UserController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string): Promise<DataUserResponseDto | null> {
+  findOne(
+    @Param("id", new ParseUUIDPipe()) id: string
+  ): Promise<DataUserResponseDto | null> {
     return this.userService.findOne(id);
   }
 
   @Patch(":id")
   update(
-    @Param("id") id: string,
+    @Param("id", new ParseUUIDPipe()) id: string,
     @Body() updateUserDto: UpdateUserDto
   ): Promise<DataUserResponseDto> {
     return this.userService.update(id, updateUserDto);
@@ -46,7 +49,7 @@ export class UserController {
 
   @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param("id") id: string): Promise<void> {
+  remove(@Param("id", new ParseUUIDPipe()) id: string): Promise<void> {
     return this.userService.remove(id);
   }
 }
