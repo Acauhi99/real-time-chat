@@ -8,6 +8,8 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";
 import { HttpExceptionFilter } from "./common/filters/http.exception.filter";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
+import { getCacheConfig } from "./cache.config";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
   imports: [
@@ -19,6 +21,13 @@ import { TransformInterceptor } from "./common/interceptors/transform.intercepto
       useFactory: (configService: ConfigService) =>
         getDatabaseConfig(configService),
       inject: [ConfigService],
+    }),
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) =>
+        getCacheConfig(configService),
+      inject: [ConfigService],
+      isGlobal: true,
     }),
     UserModule,
     AuthModule,
