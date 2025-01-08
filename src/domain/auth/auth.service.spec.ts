@@ -6,6 +6,7 @@ import { CreateUserDto } from "../user/dto/create-user.dto";
 import { SignInDto } from "./dto/sign-in.dto";
 import { DataUserResponseDto } from "../user/dto/data-user-response.dto";
 import { ConflictException, UnauthorizedException } from "@nestjs/common";
+import { CacheModule, Cache } from "@nestjs/cache-manager";
 import * as bcrypt from "bcrypt";
 
 jest.mock("bcrypt");
@@ -19,23 +20,32 @@ const mockJwtService = () => ({
   sign: jest.fn(),
 });
 
+const mockCacheManager = {
+  get: jest.fn(),
+  set: jest.fn(),
+};
+
 describe("AuthService", () => {
   let authService: AuthService;
   let userRepository: any;
   let jwtService: any;
+  let cacheManager: Cache;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CacheModule.register()],
       providers: [
         AuthService,
         { provide: UserRepository, useFactory: mockUserRepository },
         { provide: JwtService, useFactory: mockJwtService },
+        { provide: Cache, useValue: mockCacheManager },
       ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
     userRepository = module.get<UserRepository>(UserRepository);
     jwtService = module.get<JwtService>(JwtService);
+    cacheManager = module.get<Cache>(Cache);
   });
 
   afterEach(() => {

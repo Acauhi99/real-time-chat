@@ -5,6 +5,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { DataUserResponseDto } from "./dto/data-user-response.dto";
 import { NotFoundException, ConflictException } from "@nestjs/common";
+import { CacheModule, Cache } from "@nestjs/cache-manager";
 
 const mockUserRepository = () => ({
   createUser: jest.fn(),
@@ -14,20 +15,29 @@ const mockUserRepository = () => ({
   removeUser: jest.fn(),
 });
 
+const mockCacheManager = {
+  get: jest.fn(),
+  set: jest.fn(),
+};
+
 describe("UserService", () => {
   let userService: UserService;
   let userRepository: any;
+  let cacheManager: Cache;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CacheModule.register()],
       providers: [
         UserService,
         { provide: UserRepository, useFactory: mockUserRepository },
+        { provide: Cache, useValue: mockCacheManager },
       ],
     }).compile();
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<UserRepository>(UserRepository);
+    cacheManager = module.get<Cache>(Cache);
   });
 
   afterEach(() => {
